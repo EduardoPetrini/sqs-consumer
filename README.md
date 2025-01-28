@@ -1,87 +1,120 @@
-# SQS Consumer
+# AWS SQS Consumer
 
-A Node.js project written in TypeScript to consume messages from an AWS SQS (Simple Queue Service) queue.
+A TypeScript Node.js application for consuming messages from Amazon Simple Queue Service (SQS).
 
 ## Prerequisites
 
 - Node.js (v18 or higher recommended)
-- AWS account with SQS access
-- LocalStack (optional, for local development)
+- npm or yarn
+- AWS credentials configured
+- Local SQS instance running (e.g., via LocalStack) or access to AWS SQS
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo/sqs-consumer.git
-   cd sqs-consumer
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Create a `.env` file in the root directory and add your environment variables:
-   ```env
-   QUEUE_NAME=your-queue-name
-   ```
+```bash
+npm install
+```
 
 ## Configuration
 
-- **Local Development**: If you're using LocalStack for local development, ensure that the `endpoint` in `index.ts` points to your LocalStack SQS service (`http://localhost:4566`).
-- **AWS SQS**: If you're connecting to AWS SQS directly, update the `AWS.SQS` configuration in `index.ts` with your AWS credentials and region.
+Create a `.env` file in the root directory with the following variables:
+
+```env
+QUEUE_NAME=test-queue
+```
+
+## Project Structure
+
+```
+.
+├── lib/
+│   ├── receiveMessages.ts
+│   └── deleteMessages.ts
+├── index.ts
+├── package.json
+└── README.md
+```
+
+## Features
+
+- Connects to AWS SQS (supports both local and AWS environments)
+- Polls for messages with a 5-second interval
+- Automatically deletes processed messages
+- TypeScript support for better development experience
 
 ## Usage
 
-### Running the Consumer
+### Development Mode
 
-To start consuming messages from the SQS queue, run:
-
-```bash
-npm start
-```
-
-This will:
-1. Connect to the SQS queue specified in the `.env` file.
-2. Poll the queue for messages.
-3. Process and delete the messages once they are received.
-
-### Development
-
-For development, you can use `nodemon` to automatically restart the server when changes are detected:
+Run the application with hot-reload:
 
 ```bash
 npm run dev
 ```
 
-### Testing
+### Production Mode
 
-To run tests, use:
+Run the application:
+
+```bash
+npm start
+```
+
+### Running Tests
+
+Execute the test suite:
 
 ```bash
 npm test
 ```
 
-## Project Structure
+## API Reference
 
-- `index.ts`: The main entry point of the application.
-- `lib/receiveMessages.ts`: Handles receiving messages from the SQS queue.
-- `lib/deleteMessages.ts`: Handles deleting messages from the SQS queue after processing.
-- `.env`: Environment variables configuration.
-- `package.json`: Project dependencies and scripts.
+### receiveMessages
+
+```typescript
+receiveMessages(SQS: AWS.SQS, queueUrl: string) => Promise<AWS.SQS.ReceiveMessageResult>
+```
+
+Receives messages from the specified SQS queue.
+
+### deleteMessages
+
+```typescript
+deleteMessages(
+  SQS: AWS.SQS, 
+  queueUrl: string, 
+  messages: AWS.SQS.MessageList
+) => Promise<AWS.SQS.DeleteMessageBatchResultEntryList>
+```
+
+Deletes processed messages from the queue.
+
+## Local Development
+
+The project is configured to work with LocalStack by default. The SQS endpoint is set to:
+
+```
+http://localhost:4566
+```
 
 ## Dependencies
 
-- **aws-sdk**: AWS SDK for JavaScript to interact with AWS services.
-- **dotenv**: Loads environment variables from a `.env` file.
-- **typescript**: TypeScript compiler and tooling.
-- **nodemon**: Utility to monitor changes in the source code and restart the server.
-- **ts-node**: TypeScript execution environment for Node.js.
+- aws-sdk: AWS SDK for JavaScript
+- dotenv: Environment variable management
+- typescript: TypeScript support
+- nodemon: Development hot-reload
+- ts-node: TypeScript execution environment
+- tsx: TypeScript execution and testing
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
-This project is licensed under the ISC License. See the [LICENSE](LICENSE) file for details.
+ISC
